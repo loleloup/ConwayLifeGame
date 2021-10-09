@@ -5,11 +5,40 @@ from PyQt5 import QtCore, QtGui, QtWidgets, Qt
 from VAR import *
 
 
+class ResizeDialog(Qt.QDialog):
+
+    def __init__(self, width, height):
+        super().__init__()
+        self.layout = QtWidgets.QFormLayout()
+
+        self.width = QtWidgets.QSpinBox()
+        self.height = QtWidgets.QSpinBox()
+        self.width.setMaximum(2000)
+        self.height.setMaximum(2000)
+        self.width.setValue(width)
+        self.height.setValue(height)
+
+        self.layout.addRow(QtWidgets.QLabel("width"), self.width)
+        self.layout.addRow(QtWidgets.QLabel("height"), self.height)
+        cancel = QtWidgets.QPushButton("cancel")
+        cancel.clicked.connect(self.reject)
+        ok = QtWidgets.QPushButton("ok")
+        ok.clicked.connect(self.accept)
+        self.layout.addRow(cancel, ok)
+        self.setLayout(self.layout)
+
+
+    def get_width(self):
+        return self.width.value()
+
+
+    def get_height(self):
+        return self.height.value()
+
+
+
 class TableWidget(QtWidgets.QWidget):
     squaresize = 10
-    squarecolor = "black"
-    maxwidth = 2000
-    maxheight = 2000
 
     def __init__(self, x=100, y=100):
         super().__init__()
@@ -49,7 +78,6 @@ class TableWidget(QtWidgets.QWidget):
                 self.table.table[pos_y][pos_x] = not self.table.table[pos_y][pos_x]
                 self.update()
 
-
     def next_step(self):
         self.table.update()
         self.update()
@@ -72,7 +100,19 @@ class TableWidget(QtWidgets.QWidget):
             self.timer.stop()
 
     def resize_table(self):
-        pass
+        dial = ResizeDialog(self.width, self.height)
+        if dial.exec():
+            if self.playing:
+                self.playing = False
+                self.timer.stop()
+            width = dial.get_width()
+            height = dial.get_height()
+            self.table = ConwayTable(width, height)
+            self.width = width
+            self.height = height
+            self.disp_width = width * self.squaresize
+            self.disp_height = height * self.squaresize
+            self.update()
 
 
 class MainWind(QtWidgets.QMainWindow):
@@ -93,9 +133,11 @@ class MainWind(QtWidgets.QMainWindow):
 
         menu = PyQt5.QtWidgets.QMenuBar()
         new_act = menu.addAction("save state")
+        new_act.setIcon(Qt.QIcon("icons/save_button.png"))
         new_act.triggered.connect(self._tablew.save)
 
         new_act = menu.addAction("load state")
+        new_act.setIcon(Qt.QIcon("icons/open_button.png"))
         new_act.triggered.connect(self._tablew.load)
 
         self.play_pause_button = menu.addAction("play-pause")
@@ -103,16 +145,16 @@ class MainWind(QtWidgets.QMainWindow):
         self.play_pause_button.triggered.connect(self.playpause)
 
         new_act = menu.addAction("next_step")
-        #new_act.setIcon(Qt.QIcon("../next_button.jpg"))
+        new_act.setIcon(Qt.QIcon("icons/next_button.png"))
         new_act.triggered.connect(self._tablew.next_step)
 
         settingmenu = menu.addMenu("settings")
+        settingmenu.setIcon(Qt.QIcon("icons/settings_button.png"))
         new_act = settingmenu.addAction("resize grid")
         new_act.triggered.connect(self._tablew.resize_table)
+        new_act.triggered.connect(self.resetplay)
 
         self.setMenuBar(menu)
-
-
 
         QtWidgets.QShortcut(
             QtGui.QKeySequence(QtGui.QKeySequence.ZoomIn),
@@ -130,11 +172,13 @@ class MainWind(QtWidgets.QMainWindow):
 
     def playpause(self):
         if self._tablew.playing:
-            self.play_pause_button.setIcon(Qt.QIcon("../play_button.jpg"))
+            self.play_pause_button.setIcon(Qt.QIcon("icons/play_button.png"))
         else:
-            #self.play_pause_button.setIcon(Qt.QIcon("../pause_button.jpg"))
-            pass
+            self.play_pause_button.setIcon(Qt.QIcon("icons/pause_button.png"))
         self._tablew.playpause()
+
+    def resetplay(self):
+        self.play_pause_button.setIcon(Qt.QIcon("icons/play_button.png"))
 
     @QtCore.pyqtSlot()
     def zoom_in(self):
