@@ -36,8 +36,14 @@ class ConwayTable:
                 for j in range(self.width):
                     file.write(str(int(self.table[i][j])))
 
-    def load(self):
-        pass
-
-    def resize(self):
-        pass
+    def load(self, file):
+        line = file.readline()
+        i = 0
+        j = 0
+        for char in line:
+            if int(char):
+                self.table[i][j] = True
+            j += 1
+            if j == self.width:
+                j = 0
+                i += 1

@@ -88,8 +88,18 @@ class TableWidget(QtWidgets.QWidget):
             self.table.save(path)
 
     def load(self):
-        # self.table.load()
-        pass
+        path = Qt.QFileDialog.getOpenFileName()[0]  # improve later with text files only or smth
+        if path != '':
+            with open(path) as file:
+
+                size = file.readline().split(",")
+                self.height = int(size[0])
+                self.width = int(size[1])
+                self.disp_width = self.width * self.squaresize
+                self.disp_height = self.height * self.squaresize
+                self.table = ConwayTable(self.width, self.height)
+                self.table.load(file)
+                self.update()
 
     def playpause(self):
         if not self.playing:
@@ -153,6 +163,14 @@ class MainWind(QtWidgets.QMainWindow):
         new_act = settingmenu.addAction("resize grid")
         new_act.triggered.connect(self._tablew.resize_table)
         new_act.triggered.connect(self.resetplay)
+
+        new_act = menu.addAction("zoom_in")
+        new_act.setIcon(Qt.QIcon("icons/zoom-in.png"))
+        new_act.triggered.connect(self.zoom_in)
+
+        new_act = menu.addAction("zoom_out")
+        new_act.setIcon(Qt.QIcon("icons/zoom-out.png"))
+        new_act.triggered.connect(self.zoom_out)
 
         self.setMenuBar(menu)
 
