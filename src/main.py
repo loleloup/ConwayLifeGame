@@ -50,6 +50,7 @@ class TableWidget(QtWidgets.QWidget):
         self.table = ConwayTable(x, y)
         self.timer = Qt.QTimer()
         self.timer.timeout.connect(self.next_step)
+        self.delay = 500
 
     def paintEvent(self, event):
         qp = QtGui.QPainter(self)
@@ -104,7 +105,7 @@ class TableWidget(QtWidgets.QWidget):
     def playpause(self):
         if not self.playing:
             self.playing = True
-            self.timer.start(500)
+            self.timer.start(self.delay)
         else:
             self.playing = False
             self.timer.stop()
@@ -124,6 +125,11 @@ class TableWidget(QtWidgets.QWidget):
             self.disp_height = height * self.squaresize
             self.update()
 
+    def changedelay(self):
+        input = Qt.QInputDialog().getInt(None, "modify delay", "timer delay (ms)", self.delay, 50)
+        if input[1]:
+            self.delay = input[0]
+            self.timer.setInterval(self.delay)
 
 class MainWind(QtWidgets.QMainWindow):
     factor = 1.25
@@ -163,6 +169,9 @@ class MainWind(QtWidgets.QMainWindow):
         new_act = settingmenu.addAction("resize grid")
         new_act.triggered.connect(self._tablew.resize_table)
         new_act.triggered.connect(self.resetplay)
+        new_act = settingmenu.addAction("modify play speed")
+        new_act.triggered.connect(self._tablew.changedelay)
+
 
         new_act = menu.addAction("zoom_in")
         new_act.setIcon(Qt.QIcon("icons/zoom-in.png"))
