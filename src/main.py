@@ -99,11 +99,11 @@ class MainWind(QtWidgets.QMainWindow):
         new_act.triggered.connect(self._tablew.load)
 
         self.play_pause_button = menu.addAction("play-pause")
-        self.play_pause_button.setIcon(Qt.QIcon("play_button.png"))
+        self.play_pause_button.setIcon(Qt.QIcon("icons/play_button.png"))
         self.play_pause_button.triggered.connect(self.playpause)
 
         new_act = menu.addAction("next_step")
-        new_act.setIcon(Qt.QIcon("next_button.jpg"))
+        #new_act.setIcon(Qt.QIcon("../next_button.jpg"))
         new_act.triggered.connect(self._tablew.next_step)
 
         settingmenu = menu.addMenu("settings")
@@ -130,9 +130,10 @@ class MainWind(QtWidgets.QMainWindow):
 
     def playpause(self):
         if self._tablew.playing:
-            self.play_pause_button.setIcon(Qt.QIcon("play_button.jpg"))
+            self.play_pause_button.setIcon(Qt.QIcon("../play_button.jpg"))
         else:
-            self.play_pause_button.setIcon(Qt.QIcon("pause_button.jpg"))
+            #self.play_pause_button.setIcon(Qt.QIcon("../pause_button.jpg"))
+            pass
         self._tablew.playpause()
 
     @QtCore.pyqtSlot()
