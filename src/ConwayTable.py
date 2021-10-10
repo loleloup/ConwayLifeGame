@@ -1,3 +1,5 @@
+from random import randint
+
 class ConwayTable:
     def __init__(self, width, height):
         self.table = [[False for _ in range(width)] for _ in range(height)]
@@ -47,3 +49,10 @@ class ConwayTable:
             if j == self.width:
                 j = 0
                 i += 1
+
+    def randomize(self, rate):
+        for i in range(self.height):
+            for j in range(self.width):
+                rand = randint(0, 100)
+                if rand < rate:
+                    self.table[i][j] = True

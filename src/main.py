@@ -38,15 +38,14 @@ class ResizeDialog(Qt.QDialog):
 
 
 class TableWidget(QtWidgets.QWidget):
-    squaresize = 10
 
     def __init__(self, x=100, y=100):
         super().__init__()
         self.playing = False
         self.width = x
         self.height = y
-        self.disp_width = x * self.squaresize
-        self.disp_height = y * self.squaresize
+        self.disp_width = x * SQUARESIZE
+        self.disp_height = y * SQUARESIZE
         self.table = ConwayTable(x, y)
         self.timer = Qt.QTimer()
         self.timer.timeout.connect(self.next_step)
@@ -65,7 +64,7 @@ class TableWidget(QtWidgets.QWidget):
                     qp.setBrush(PyQt5.QtGui.QBrush(QtGui.QColor("black")))
                 else:
                     qp.setBrush(PyQt5.QtGui.QBrush(QtGui.QColor("white")))
-                qp.drawRect(self.squaresize * j + MARGIN, self.squaresize * i + MARGIN, 10, 10)
+                qp.drawRect(SQUARESIZE * j + MARGIN, SQUARESIZE * i + MARGIN, 10, 10)
 
     def mousePressEvent(self, event):
         if not self.playing:
@@ -96,8 +95,8 @@ class TableWidget(QtWidgets.QWidget):
                 size = file.readline().split(",")
                 self.height = int(size[0])
                 self.width = int(size[1])
-                self.disp_width = self.width * self.squaresize
-                self.disp_height = self.height * self.squaresize
+                self.disp_width = self.width * SQUARESIZE
+                self.disp_height = self.height * SQUARESIZE
                 self.table = ConwayTable(self.width, self.height)
                 self.table.load(file)
                 self.update()
@@ -121,8 +120,8 @@ class TableWidget(QtWidgets.QWidget):
             self.table = ConwayTable(width, height)
             self.width = width
             self.height = height
-            self.disp_width = width * self.squaresize
-            self.disp_height = height * self.squaresize
+            self.disp_width = width * SQUARESIZE
+            self.disp_height = height * SQUARESIZE
             self.update()
 
     def changedelay(self):
@@ -130,6 +129,11 @@ class TableWidget(QtWidgets.QWidget):
         if input[1]:
             self.delay = input[0]
             self.timer.setInterval(self.delay)
+
+    def randomize(self):
+        input = Qt.QInputDialog().getInt(None, "Randomize table", "rate", 50, 0, 100)
+        if input[1]:
+            self.table.randomize(input[0])
 
 class MainWind(QtWidgets.QMainWindow):
     factor = 1.25
@@ -141,8 +145,8 @@ class MainWind(QtWidgets.QMainWindow):
         self._view = QtWidgets.QGraphicsView(self._scene)
 
         self._tablew = TableWidget()
-        self._tablew.setFixedSize(self._tablew.width * self._tablew.squaresize + (2 * MARGIN),
-                                  self._tablew.height * self._tablew.squaresize + (2 * MARGIN))
+        self._tablew.setFixedSize(self._tablew.width * SQUARESIZE + (2 * MARGIN),
+                                  self._tablew.height * SQUARESIZE + (2 * MARGIN))
         self._scene.addWidget(self._tablew)
 
         self.setCentralWidget(self._view)
@@ -171,6 +175,8 @@ class MainWind(QtWidgets.QMainWindow):
         new_act.triggered.connect(self.resetplay)
         new_act = settingmenu.addAction("modify play speed")
         new_act.triggered.connect(self._tablew.changedelay)
+        new_act = settingmenu.addAction("randomize table")
+        new_act.triggered.connect(self._tablew.randomize)
 
 
         new_act = menu.addAction("zoom_in")
