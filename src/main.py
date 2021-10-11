@@ -135,6 +135,10 @@ class TableWidget(QtWidgets.QWidget):
         if input[1]:
             self.table.randomize(input[0])
 
+    def clear(self):
+        self.table = ConwayTable(self.width, self.height)
+        self.update()
+
 class MainWind(QtWidgets.QMainWindow):
     factor = 1.25
 
@@ -186,6 +190,10 @@ class MainWind(QtWidgets.QMainWindow):
         new_act = menu.addAction("zoom_out")
         new_act.setIcon(Qt.QIcon("icons/zoom-out.png"))
         new_act.triggered.connect(self.zoom_out)
+
+        new_act = menu.addAction("erase")
+        new_act.setIcon(Qt.QIcon("icons/erase-button.png"))
+        new_act.triggered.connect(self._tablew.clear)
 
         self.setMenuBar(menu)
 
