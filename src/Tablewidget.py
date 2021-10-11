@@ -1,7 +1,5 @@
-import PyQt5
-
 from ConwayTable import *
-from PyQt5 import QtGui, QtWidgets, Qt
+from PyQt5 import QtCore, QtGui, QtWidgets, Qt
 from VAR import *
 
 
@@ -51,16 +49,16 @@ class TableWidget(QtWidgets.QWidget):
     def paintEvent(self, event):
         qp = QtGui.QPainter(self)
         pen = QtGui.QPen(QtGui.QColor("black"), 1)
-        brush = PyQt5.QtGui.QBrush(QtGui.QColor("black"))
+        brush = QtGui.QBrush(QtGui.QColor("black"))
 
         qp.setPen(pen)
         qp.setBrush(brush)
         for i in range(self.table.height):
             for j in range(self.table.width):
                 if self.table.table[i][j]:
-                    qp.setBrush(PyQt5.QtGui.QBrush(QtGui.QColor("black")))
+                    qp.setBrush(QtGui.QBrush(QtGui.QColor("black")))
                 else:
-                    qp.setBrush(PyQt5.QtGui.QBrush(QtGui.QColor("white")))
+                    qp.setBrush(QtGui.QBrush(QtGui.QColor("white")))
                 qp.drawRect(SQUARESIZE * j + MARGIN, SQUARESIZE * i + MARGIN, 10, 10)
 
     def mousePressEvent(self, event):

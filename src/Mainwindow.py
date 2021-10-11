@@ -16,7 +16,7 @@ class MainWind(QtWidgets.QMainWindow):
 
         self.setCentralWidget(self._view)
 
-        menu = PyQt5.QtWidgets.QMenuBar()
+        menu = QtWidgets.QMenuBar()
         new_act = menu.addAction("save state")
         new_act.setIcon(Qt.QIcon("icons/save_button.png"))
         new_act.triggered.connect(self._tablew.save)
