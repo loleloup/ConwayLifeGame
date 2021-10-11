@@ -83,15 +83,14 @@ class TableWidget(QtWidgets.QWidget):
         self.update()
 
     def save(self):
-        path = Qt.QFileDialog.getSaveFileName()[0]  # improve later with text files only or smth
+        path = Qt.QFileDialog.getSaveFileName(None, "save file as", "saved", "*.tab")[0]  # improve later with text files only or smth
         if path != '':
             self.table.save(path)
 
     def load(self):
-        path = Qt.QFileDialog.getOpenFileName()[0]  # improve later with text files only or smth
+        path = Qt.QFileDialog.getOpenFileName(None, "load file", "saved", "*.tab")[0]  # improve later with text files only or smth
         if path != '':
             with open(path) as file:
-
                 size = file.readline().split(",")
                 self.height = int(size[0])
                 self.width = int(size[1])
@@ -138,6 +137,8 @@ class TableWidget(QtWidgets.QWidget):
     def clear(self):
         self.table = ConwayTable(self.width, self.height)
         self.update()
+        self.playing = False
+        self.timer.stop()
 
 class MainWind(QtWidgets.QMainWindow):
     factor = 1.25
@@ -181,7 +182,6 @@ class MainWind(QtWidgets.QMainWindow):
         new_act.triggered.connect(self._tablew.changedelay)
         new_act = settingmenu.addAction("randomize table")
         new_act.triggered.connect(self._tablew.randomize)
-
 
         new_act = menu.addAction("zoom_in")
         new_act.setIcon(Qt.QIcon("icons/zoom-in.png"))
