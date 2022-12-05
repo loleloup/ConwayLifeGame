@@ -1,8 +1,9 @@
 from Tablewidget import *
+import pathlib
 
 class MainWind(QtWidgets.QMainWindow):
     factor = 1.25
-
+    current_directory = str(pathlib.Path(__file__).parent.parent.absolute())
     def __init__(self, parent=None):
         super(MainWind, self).__init__(parent)
 
@@ -18,23 +19,23 @@ class MainWind(QtWidgets.QMainWindow):
 
         menu = QtWidgets.QMenuBar()
         new_act = menu.addAction("save state")
-        new_act.setIcon(Qt.QIcon("icons/save_button.png"))
+        new_act.setIcon(Qt.QIcon(MainWind.current_directory + "/icons/save_button.png"))
         new_act.triggered.connect(self._tablew.save)
 
         new_act = menu.addAction("load state")
-        new_act.setIcon(Qt.QIcon("icons/open_button.png"))
+        new_act.setIcon(Qt.QIcon(MainWind.current_directory + "/icons/open_button.png"))
         new_act.triggered.connect(self._tablew.load)
 
         self.play_pause_button = menu.addAction("play-pause")
-        self.play_pause_button.setIcon(Qt.QIcon("icons/play_button.png"))
+        self.play_pause_button.setIcon(Qt.QIcon(MainWind.current_directory + "/icons\play_button.png"))
         self.play_pause_button.triggered.connect(self.playpause)
 
         new_act = menu.addAction("next_step")
-        new_act.setIcon(Qt.QIcon("icons/next_button.png"))
+        new_act.setIcon(Qt.QIcon(MainWind.current_directory + "/icons/next_button.png"))
         new_act.triggered.connect(self._tablew.next_step)
 
         settingmenu = menu.addMenu("settings")
-        settingmenu.setIcon(Qt.QIcon("icons/settings_button.png"))
+        settingmenu.setIcon(Qt.QIcon(MainWind.current_directory + "/icons/settings_button.png"))
         new_act = settingmenu.addAction("resize grid")
         new_act.triggered.connect(self._tablew.resize_table)
         new_act.triggered.connect(self.resetplay)
@@ -44,15 +45,15 @@ class MainWind(QtWidgets.QMainWindow):
         new_act.triggered.connect(self._tablew.randomize)
 
         new_act = menu.addAction("zoom_in")
-        new_act.setIcon(Qt.QIcon("icons/zoom-in.png"))
+        new_act.setIcon(Qt.QIcon(MainWind.current_directory + "/icons/zoom-in.png"))
         new_act.triggered.connect(self.zoom_in)
 
         new_act = menu.addAction("zoom_out")
-        new_act.setIcon(Qt.QIcon("icons/zoom-out.png"))
+        new_act.setIcon(Qt.QIcon(MainWind.current_directory + "/icons/zoom-out.png"))
         new_act.triggered.connect(self.zoom_out)
 
         new_act = menu.addAction("erase")
-        new_act.setIcon(Qt.QIcon("icons/erase-button.png"))
+        new_act.setIcon(Qt.QIcon(MainWind.current_directory + "/icons/erase-button.png"))
         new_act.triggered.connect(self._tablew.clear)
 
         self.setMenuBar(menu)
@@ -73,13 +74,13 @@ class MainWind(QtWidgets.QMainWindow):
 
     def playpause(self):
         if self._tablew.playing:
-            self.play_pause_button.setIcon(Qt.QIcon("icons/play_button.png"))
+            self.play_pause_button.setIcon(Qt.QIcon(MainWind.current_directory + "/icons/play_button.png"))
         else:
-            self.play_pause_button.setIcon(Qt.QIcon("icons/pause_button.png"))
+            self.play_pause_button.setIcon(Qt.QIcon(MainWind.current_directory + "/icons/pause_button.png"))
         self._tablew.playpause()
 
     def resetplay(self):
-        self.play_pause_button.setIcon(Qt.QIcon("icons/play_button.png"))
+        self.play_pause_button.setIcon(Qt.QIcon(MainWind.current_directory + "/icons/play_button.png"))
 
     @QtCore.pyqtSlot()
     def zoom_in(self):
