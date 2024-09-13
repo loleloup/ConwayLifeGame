@@ -34,10 +34,6 @@ class ResizeDialog(Qt.QDialog):
 
 class TableWidget(QtWidgets.QWidget):
 
-    colors = ("blue", "red", "yellow", "green")
-    color = "blue"
-    step = 0
-
     def __init__(self, x=100, y=100):
         super().__init__()
         self.playing = False
@@ -49,6 +45,7 @@ class TableWidget(QtWidgets.QWidget):
         self.timer = Qt.QTimer()
         self.timer.timeout.connect(self.next_step)
         self.delay = 500
+        self.step = 0
 
     def paintEvent(self, event):
         qp = QtGui.QPainter(self)
@@ -61,7 +58,7 @@ class TableWidget(QtWidgets.QWidget):
             for j in range(self.table.width):
                 if self.table.table[i][j]:
                     this_color = QtGui.QColor("white")
-                    this_color.setHsv(((self.step * 20 + i + j) * 10) % 255, 255, 255)
+                    this_color.setHsv(((self.step + i + j) * RAINBOW_FREQUENCY) % 255, 255, 255)
                     qp.setBrush(QtGui.QBrush(this_color))
                 else:
                     qp.setBrush(QtGui.QBrush(QtGui.QColor("white")))
