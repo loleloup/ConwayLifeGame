@@ -45,6 +45,7 @@ class TableWidget(QtWidgets.QWidget):
         self.timer = Qt.QTimer()
         self.timer.timeout.connect(self.next_step)
         self.delay = 500
+        self.step = 0
 
     def paintEvent(self, event):
         qp = QtGui.QPainter(self)
@@ -56,7 +57,9 @@ class TableWidget(QtWidgets.QWidget):
         for i in range(self.table.height):
             for j in range(self.table.width):
                 if self.table.table[i][j]:
-                    qp.setBrush(QtGui.QBrush(QtGui.QColor("black")))
+                    this_color = QtGui.QColor("white")
+                    this_color.setHsv(((self.step + i + j) * RAINBOW_FREQUENCY) % 255, 255, 255)
+                    qp.setBrush(QtGui.QBrush(this_color))
                 else:
                     qp.setBrush(QtGui.QBrush(QtGui.QColor("white")))
                 qp.drawRect(SQUARESIZE * j + MARGIN, SQUARESIZE * i + MARGIN, 10, 10)
@@ -74,6 +77,7 @@ class TableWidget(QtWidgets.QWidget):
                 self.update()
 
     def next_step(self):
+        self.step = self.step + 1
         self.table.update()
         self.update()
 
