@@ -101,13 +101,19 @@ class TableWidget(QtWidgets.QWidget):
                 self.table.load(file)
                 self.update()
 
-    def playpause(self):
+    def toggle_play_pause(self):
         if not self.playing:
-            self.playing = True
-            self.timer.start(self.delay)
+            self.play()
         else:
-            self.playing = False
-            self.timer.stop()
+            self.pause()
+    
+    def play(self):
+        self.playing = True
+        self.timer.start(self.delay)
+    
+    def pause(self):
+        self.playing = False
+        self.timer.stop()
 
     def resize_table(self):
         dial = ResizeDialog(self.width, self.height)
