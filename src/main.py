@@ -1,10 +1,10 @@
-from Mainwindow import *
+from Mainwindow import MainWind
+from QtWidgets import QApplication
 
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     import sys
 
-    app = QtWidgets.QApplication(sys.argv)
+    app = QApplication(sys.argv)
     ui = MainWind()
     ui.show()
     sys.exit(app.exec_())

@@ -1,26 +1,27 @@
-from ConwayTable import *
-from PyQt5 import QtCore, QtGui, QtWidgets, Qt
-from VAR import *
+from ConwayTable import ConwayTable
+from Qt import QDialog, QFileDialog, QTimer, QInputDialog
+from QtGui import QPainter, QPen, QBrush, QColor
+from QWidget import QWidget, QFormLayout, QSpinBox, QLabel, QPushButton
+from VAR import MARGIN, SQUARESIZE, RAINBOW_FREQUENCY
 
 
-class ResizeDialog(Qt.QDialog):
-
+class ResizeDialog(QDialog):
     def __init__(self, width, height):
         super().__init__()
-        self.layout = QtWidgets.QFormLayout()
+        self.layout = QFormLayout()
 
-        self.width = QtWidgets.QSpinBox()
-        self.height = QtWidgets.QSpinBox()
+        self.width = QSpinBox()
+        self.height = QSpinBox()
         self.width.setMaximum(2000)
         self.height.setMaximum(2000)
         self.width.setValue(width)
         self.height.setValue(height)
 
-        self.layout.addRow(QtWidgets.QLabel("width"), self.width)
-        self.layout.addRow(QtWidgets.QLabel("height"), self.height)
-        cancel = QtWidgets.QPushButton("cancel")
+        self.layout.addRow(QLabel("width"), self.width)
+        self.layout.addRow(QLabel("height"), self.height)
+        cancel = QPushButton("cancel")
         cancel.clicked.connect(self.reject)
-        ok = QtWidgets.QPushButton("ok")
+        ok = QPushButton("ok")
         ok.clicked.connect(self.accept)
         self.layout.addRow(cancel, ok)
         self.setLayout(self.layout)
@@ -32,8 +33,7 @@ class ResizeDialog(Qt.QDialog):
         return self.height.value()
 
 
-class TableWidget(QtWidgets.QWidget):
-
+class TableWidget(QWidget):
     def __init__(self, x=100, y=100):
         super().__init__()
         self.playing = False
@@ -42,26 +42,28 @@ class TableWidget(QtWidgets.QWidget):
         self.disp_width = x * SQUARESIZE
         self.disp_height = y * SQUARESIZE
         self.table = ConwayTable(x, y)
-        self.timer = Qt.QTimer()
+        self.timer = QTimer()
         self.timer.timeout.connect(self.next_step)
         self.delay = 500
         self.step = 0
 
     def paintEvent(self, event):
-        qp = QtGui.QPainter(self)
-        pen = QtGui.QPen(QtGui.QColor("black"), 1)
-        brush = QtGui.QBrush(QtGui.QColor("black"))
+        qp = QPainter(self)
+        pen = QPen(QColor("black"), 1)
+        brush = QBrush(QColor("black"))
 
         qp.setPen(pen)
         qp.setBrush(brush)
         for i in range(self.table.height):
             for j in range(self.table.width):
                 if self.table.table[i][j]:
-                    this_color = QtGui.QColor("white")
-                    this_color.setHsv(((self.step + i + j) * RAINBOW_FREQUENCY) % 255, 255, 255)
-                    qp.setBrush(QtGui.QBrush(this_color))
+                    this_color = QColor("white")
+                    this_color.setHsv(
+                        ((self.step + i + j) * RAINBOW_FREQUENCY) % 255, 255, 255
+                    )
+                    qp.setBrush(QBrush(this_color))
                 else:
-                    qp.setBrush(QtGui.QBrush(QtGui.QColor("white")))
+                    qp.setBrush(QBrush(QColor("white")))
                 qp.drawRect(SQUARESIZE * j + MARGIN, SQUARESIZE * i + MARGIN, 10, 10)
 
     def mousePressEvent(self, event):
@@ -69,7 +71,10 @@ class TableWidget(QtWidgets.QWidget):
             bouton = event.button()
             if bouton == 1:
                 pos = event.pos()
-                if not (MARGIN < pos.x() < MARGIN + self.disp_width and MARGIN < pos.y() < MARGIN + self.disp_height):
+                if not (
+                    MARGIN < pos.x() < MARGIN + self.disp_width
+                    and MARGIN < pos.y() < MARGIN + self.disp_height
+                ):
                     return
                 pos_x = (pos.x() - MARGIN) // 10
                 pos_y = (pos.y() - MARGIN) // 10
@@ -82,15 +87,17 @@ class TableWidget(QtWidgets.QWidget):
         self.update()
 
     def save(self):
-        path = Qt.QFileDialog.getSaveFileName(None, "save file as", "saved", "*.tab")[
-            0]  # improve later with text files only or smth
-        if path != '':
+        path = QFileDialog.getSaveFileName(None, "save file as", "saved", "*.tab")[
+            0
+        ]  # improve later with text files only or smth
+        if path != "":
             self.table.save(path)
 
     def load(self):
-        path = Qt.QFileDialog.getOpenFileName(None, "load file", "saved", "*.tab")[
-            0]  # improve later with text files only or smth
-        if path != '':
+        path = QFileDialog.getOpenFileName(None, "load file", "saved", "*.tab")[
+            0
+        ]  # improve later with text files only or smth
+        if path != "":
             with open(path) as file:
                 size = file.readline().split(",")
                 self.height = int(size[0])
@@ -106,11 +113,11 @@ class TableWidget(QtWidgets.QWidget):
             self.play()
         else:
             self.pause()
-    
+
     def play(self):
         self.playing = True
         self.timer.start(self.delay)
-    
+
     def pause(self):
         self.playing = False
         self.timer.stop()
@@ -131,13 +138,15 @@ class TableWidget(QtWidgets.QWidget):
             self.update()
 
     def changedelay(self):
-        input = Qt.QInputDialog().getInt(None, "modify delay", "timer delay (ms)", self.delay, 50)
+        input = QInputDialog().getInt(
+            None, "modify delay", "timer delay (ms)", self.delay, 50
+        )
         if input[1]:
             self.delay = input[0]
             self.timer.setInterval(self.delay)
 
     def randomize(self):
-        input = Qt.QInputDialog().getInt(None, "Randomize table", "rate", 50, 0, 100)
+        input = QInputDialog().getInt(None, "Randomize table", "rate", 50, 0, 100)
         if input[1]:
             self.table.randomize(input[0])
 
